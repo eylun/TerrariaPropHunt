@@ -1,1 +1,5 @@
-Prop Hunt is a pretty cool mod, it does...this. Modify this file with a description of your mod.
+The Prop Hunt Mod is a mod that allows players to transform into furniture! Craft the Prop Hunt Wand with three pieces of wood (any wood!) and a chest (any chest!) and you can start transforming into objects!
+
+To undo the effect of the transformation, just right click with the prop hunt wand and you will turn back into your human form. Have fun running around pretending to be a chest, or a workbench, or a drawer!
+
+Note: Animated furniture does not work very effectively. You will transform into a still image of it so transform at your own risk! Attentive people will be able to catch if you're not animated. An extractinator or an autohammer that doesn't move looks awfully suspicious...
