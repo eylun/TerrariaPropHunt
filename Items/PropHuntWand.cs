@@ -42,7 +42,6 @@ namespace PropHunt.Items
 				{
 					if (Main.netMode != NetmodeID.SinglePlayer)
 					{
-						Main.NewText(player.GetModPlayer<PropHuntPlayer>().PropEffect);
 						ModPacket packet = mod.GetPacket();
 						packet.Write((byte)PropHuntModMessageType.removeProp);
 						packet.Write(player.whoAmI);

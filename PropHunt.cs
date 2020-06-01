@@ -15,7 +15,26 @@ namespace PropHunt
 {
 	public class PropHunt : Mod
 	{
-		public override void AddRecipeGroups()
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+			bool anyPlayerTransformed = false;
+            foreach (var player in Main.player)
+            {
+				if (player.GetModPlayer<PropHuntPlayer>().isTransformed)
+                {
+					anyPlayerTransformed = true;
+                }
+            }
+			if (anyPlayerTransformed)
+            {
+				int healthBarIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Entity Health Bars"));
+				int mouseItemIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Item / NPC Head"));
+				layers.RemoveAt(healthBarIndex);
+				layers.RemoveAt(mouseItemIndex);
+			}
+        }
+
+        public override void AddRecipeGroups()
 		{
 			RecipeGroup group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Chest", new int[]
 			{
