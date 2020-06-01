@@ -1,4 +1,4 @@
 displayName = Prop Hunt
 author = Vira
-version = 0.1.2
+version = 0.1.3
 homepage = https://forums.terraria.org/index.php?threads/prop-hunt.92184/

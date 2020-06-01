@@ -1,6 +1,9 @@
 ﻿using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
+using Microsoft.Xna.Framework;
 using static Terraria.ModLoader.ModContent;
 
 namespace PropHunt.Items
@@ -37,13 +40,30 @@ namespace PropHunt.Items
 			{
 				if (player.GetModPlayer<PropHuntPlayer>().PropEffect != null)
 				{
-					player.GetModPlayer<PropHuntPlayer>().PropEffect = null;
+					if (Main.netMode != NetmodeID.SinglePlayer)
+					{
+						Main.NewText(player.GetModPlayer<PropHuntPlayer>().PropEffect);
+						ModPacket packet = mod.GetPacket();
+						packet.Write((byte)PropHuntModMessageType.removeProp);
+						packet.Write(player.whoAmI);
+						packet.Send();
+					}
 				}
 			} else
             {
-				if (player.GetModPlayer<PropHuntPlayer>().isMousingOver)
+				if (player.GetModPlayer<PropHuntPlayer>().isMousingOver && Main.netMode != NetmodeID.SinglePlayer)
 				{
-					player.GetModPlayer<PropHuntPlayer>().isUsePropWand = true;
+					int worldX = (int)Main.MouseWorld.X / 16;
+					int worldY = (int)Main.MouseWorld.Y / 16;
+					if (TileObjectData.GetTileData(Main.tile[worldX, worldY]) != null)
+					{
+						ModPacket packet = mod.GetPacket();
+						packet.Write((byte)PropHuntModMessageType.triggerProp);
+						packet.Write(player.whoAmI);
+						packet.Write(worldX);
+						packet.Write(worldY);
+						packet.Send();
+					}
 				}
 			}
 			return true;

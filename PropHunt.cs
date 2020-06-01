@@ -1,8 +1,15 @@
-
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace PropHunt
 {
@@ -59,5 +66,54 @@ namespace PropHunt
 			});
 			RecipeGroup.RegisterGroup("PropHunt: Chests", group);
 		}
+
+		public override void HandlePacket(BinaryReader reader, int whoAmI)
+		{
+			PropHuntModMessageType msgType = (PropHuntModMessageType)reader.ReadByte();
+			switch (msgType)
+			{
+				case PropHuntModMessageType.triggerProp:
+					int playerId = reader.ReadInt32();
+					int mouseX = reader.ReadInt32();
+					int mouseY = reader.ReadInt32();
+					Player triggerPlayer = Main.player[playerId];
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseX = mouseX;
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseY = mouseY;
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().isTransformed = true;
+					if (Main.netMode == NetmodeID.Server) {
+						var packet = GetPacket();
+						packet.Write((byte)PropHuntModMessageType.triggerProp);
+						packet.Write(playerId);
+						packet.Write(mouseX);
+						packet.Write(mouseY);
+						packet.Send(-1);
+					}
+					else
+					{
+						
+					}
+					break;
+				case PropHuntModMessageType.removeProp:
+					playerId = reader.ReadInt32();
+					triggerPlayer = Main.player[playerId];
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().isTransformed = false;
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseX = null;
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseY = null;
+					if (Main.netMode == NetmodeID.Server)
+					{
+						var packet = GetPacket();
+						packet.Write((byte)PropHuntModMessageType.removeProp);
+						packet.Write(playerId);
+						packet.Send(-1);
+					}
+					break;
+
+			}
+		}
+	}
+	internal enum PropHuntModMessageType : byte
+	{
+		triggerProp,
+		removeProp
 	}
 }
