@@ -29,8 +29,14 @@ namespace PropHunt
             {
 				int healthBarIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Entity Health Bars"));
 				int mouseItemIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Item / NPC Head"));
-				layers.RemoveAt(healthBarIndex);
-				layers.RemoveAt(mouseItemIndex);
+				if (healthBarIndex != -1)
+				{
+					layers.RemoveAt(healthBarIndex);
+				}
+				if (mouseItemIndex != -1)
+				{
+					layers.RemoveAt(mouseItemIndex);
+				}
 			}
         }
 
@@ -106,10 +112,6 @@ namespace PropHunt
 						packet.Write(mouseX);
 						packet.Write(mouseY);
 						packet.Send(-1);
-					}
-					else
-					{
-						
 					}
 					break;
 				case PropHuntModMessageType.removeProp:
