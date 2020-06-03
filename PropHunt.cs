@@ -132,7 +132,7 @@ namespace PropHunt
 					}
 					break;
 				case PropHuntModMessageType.propSync:
-					playerId = reader.ReadByte();
+					playerId = reader.ReadInt32();
 					triggerPlayer = Main.player[playerId];
 					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseX = reader.ReadInt32();
 					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseY = reader.ReadInt32();
