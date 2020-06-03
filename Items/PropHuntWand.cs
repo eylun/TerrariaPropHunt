@@ -47,21 +47,34 @@ namespace PropHunt.Items
 						packet.Write(player.whoAmI);
 						packet.Send();
 					}
+					else
+                    {
+						Main.LocalPlayer.GetModPlayer<PropHuntPlayer>().isTransformed = false;
+						Main.LocalPlayer.GetModPlayer<PropHuntPlayer>().mouseX = null;
+						Main.LocalPlayer.GetModPlayer<PropHuntPlayer>().mouseY = null;
+					}
 				}
 			} else
             {
-				if (player.GetModPlayer<PropHuntPlayer>().isMousingOver && Main.netMode != NetmodeID.SinglePlayer)
+				int worldX = (int)Main.MouseWorld.X / 16;
+				int worldY = (int)Main.MouseWorld.Y / 16;
+				if (TileObjectData.GetTileData(Main.tile[worldX, worldY]) != null)
 				{
-					int worldX = (int)Main.MouseWorld.X / 16;
-					int worldY = (int)Main.MouseWorld.Y / 16;
-					if (TileObjectData.GetTileData(Main.tile[worldX, worldY]) != null)
+					if (player.GetModPlayer<PropHuntPlayer>().isMousingOver && Main.netMode != NetmodeID.SinglePlayer)
 					{
+					
 						ModPacket packet = mod.GetPacket();
 						packet.Write((byte)PropHuntModMessageType.triggerProp);
 						packet.Write(player.whoAmI);
 						packet.Write(worldX);
 						packet.Write(worldY);
 						packet.Send();
+					}
+					else
+                    {
+						Main.LocalPlayer.GetModPlayer<PropHuntPlayer>().isTransformed = true;
+						Main.LocalPlayer.GetModPlayer<PropHuntPlayer>().mouseX = worldX;
+						Main.LocalPlayer.GetModPlayer<PropHuntPlayer>().mouseY = worldY;
 					}
 				}
 			}

@@ -14,6 +14,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 using static Terraria.ModLoader.ModContent;
+using System.Runtime.InteropServices;
 
 namespace PropHunt
 {
@@ -25,6 +26,19 @@ namespace PropHunt
         public bool isUsePropWand = false;
         public PlayerLayer PropEffect;
         public bool isMousingOver = false;
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            ModPacket packet = mod.GetPacket();
+            packet.Write((byte)PropHuntModMessageType.propSync);
+            packet.Write(player.whoAmI);
+            int playerX = player.GetModPlayer<PropHuntPlayer>().mouseX.GetValueOrDefault();
+            int playerY = player.GetModPlayer<PropHuntPlayer>().mouseY.GetValueOrDefault();
+            packet.Write(playerX);
+            packet.Write(playerY);
+            packet.Write(player.GetModPlayer<PropHuntPlayer>().isTransformed);
+            packet.Send(toWho, fromWho);
+        }
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             if (isTransformed && mouseX != null && mouseY != null)

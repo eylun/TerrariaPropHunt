@@ -17,25 +17,28 @@ namespace PropHunt
 	{
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
-			bool anyPlayerTransformed = false;
-            foreach (var player in Main.player)
-            {
-				if (player.GetModPlayer<PropHuntPlayer>().isTransformed)
-                {
-					anyPlayerTransformed = true;
-                }
-            }
-			if (anyPlayerTransformed)
-            {
-				int healthBarIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Entity Health Bars"));
-				int mouseItemIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Item / NPC Head"));
-				if (healthBarIndex != -1)
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				bool anyPlayerTransformed = false;
+				foreach (var player in Main.player)
 				{
-					layers.RemoveAt(healthBarIndex);
+					if (player.GetModPlayer<PropHuntPlayer>().isTransformed)
+					{
+						anyPlayerTransformed = true;
+					}
 				}
-				if (mouseItemIndex != -1)
+				if (anyPlayerTransformed)
 				{
-					layers.RemoveAt(mouseItemIndex);
+					int healthBarIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Entity Health Bars"));
+					int mouseItemIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Item / NPC Head"));
+					if (healthBarIndex != -1)
+					{
+						layers.RemoveAt(healthBarIndex);
+					}
+					if (mouseItemIndex != -1)
+					{
+						layers.RemoveAt(mouseItemIndex);
+					}
 				}
 			}
         }
@@ -128,13 +131,20 @@ namespace PropHunt
 						packet.Send(-1);
 					}
 					break;
-
+				case PropHuntModMessageType.propSync:
+					playerId = reader.ReadByte();
+					triggerPlayer = Main.player[playerId];
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseX = reader.ReadInt32();
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().mouseY = reader.ReadInt32();
+					triggerPlayer.GetModPlayer<PropHuntPlayer>().isTransformed = reader.ReadBoolean();
+					break;
 			}
 		}
 	}
 	internal enum PropHuntModMessageType : byte
 	{
 		triggerProp,
-		removeProp
+		removeProp,
+		propSync,
 	}
 }
